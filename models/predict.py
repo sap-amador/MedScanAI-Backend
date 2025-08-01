@@ -2,7 +2,7 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 import os
-from gradcam_utils import generate_heatmap
+from models.gradcam_utils import generate_heatmap
 
 # Dummy model mapping (replace with real models as needed)
 MODEL_PATHS = {
