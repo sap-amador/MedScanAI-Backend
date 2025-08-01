@@ -4,7 +4,6 @@ from PIL import Image
 import os
 from models.gradcam_utils import generate_heatmap
 
-# Dummy model mapping (replace with real models as needed)
 MODEL_PATHS = {
     "chest_xray": "models/chest_xray_model.pt",
     "brain_ct": "models/brain_ct_model.pt",
@@ -16,7 +15,7 @@ MODEL_PATHS = {
 def load_model(modality):
     model_path = MODEL_PATHS.get(modality)
     if not model_path or not os.path.exists(model_path):
-        raise ValueError(f"Model for {modality} not found.")
+        raise ValueError(f"Model for {modality} not found at path: {model_path}")
     
     model = torch.load(model_path, map_location=torch.device("cpu"))
     model.eval()
@@ -38,11 +37,9 @@ def predict_image_from_modality(modality, image_file):
         outputs = model(image_tensor)
         _, predicted = torch.max(outputs, 1)
 
-    # Optional: Class labels
     labels = ["Normal", "Pneumonia", "COVID", "TB"] if modality == "chest_xray" else ["Class 0", "Class 1"]
     predicted_class = labels[predicted.item()] if predicted.item() < len(labels) else "Unknown"
 
-    # Grad-CAM heatmap
     heatmap_path = generate_heatmap(model, image_tensor, modality)
 
     return {
